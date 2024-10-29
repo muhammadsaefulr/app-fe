@@ -134,6 +134,7 @@ const form = ref({
   eselon: '',
   jabatan: '',
   unit_kerja: '',
+  tempat_tugas: '',
   foto_pegawai: null, 
 });
 
@@ -142,7 +143,97 @@ const onFileChange = (event: any) => {
   form.value.foto_pegawai = file; 
 };
 
-const onSubmit = () => {
-  console.log('Form Data:', form.value);
+const submitPegawaiData = async () => {
+  const formData = new FormData();
+  formData.append('nip', form.value.nip);
+  formData.append('nama', form.value.nama);
+  formData.append('tempat_lahir', form.value.tempat_lahir);
+  formData.append('tgl_lahir', form.value.tgl_lahir);
+  formData.append('alamat', form.value.alamat);
+  formData.append('gender', form.value.gender);
+  formData.append('agama', form.value.agama);
+
+  if (form.value.foto_pegawai) {
+    formData.append('foto_pegawai', form.value.foto_pegawai);
+  }
+
+  try {
+    const response = await fetch('http://localhost:8000/api/pegawai/data', {
+      method: 'POST',
+      body: formData,
+    });
+
+    // Cek apakah respons berhasil atau tidak
+    if (response.ok) {
+      const data = await response.json();
+      console.log('Success:', data.message || 'Data berhasil dikirim');
+    } else {
+      const errorData = await response.json();
+      console.error('Error:', errorData.message || 'Data gagal dikirim'); 
+    }
+  } catch (error: any) {
+    console.error('Fetch error:', error.message);
+  }
+};
+
+const submitKontakPegawai = async () => {
+  const dataKontak = {
+    nip: form.value.nip,
+    no_hp: form.value.no_hp,
+    npwp: form.value.npwp,
+  };
+
+  await fetch('http://localhost:8000/api/pegawai/kontak', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(dataKontak),
+  });
+};
+
+const submitTempatTugasPegawai = async () => {
+  const dataTempatTugas = {
+    nip: form.value.nip,
+    tempat_tugas: form.value.tempat_tugas,
+  };
+
+  await fetch('http://localhost:8000/api/pegawai/tempat-tugas', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(dataTempatTugas),
+  });
+};
+
+const submitUnitTugasPegawai = async () => {
+  const dataUnitTugas = {
+    nip: form.value.nip,
+    gol: form.value.gol,
+    eselon: form.value.eselon,
+    jabatan: form.value.jabatan,
+    unit_kerja: form.value.unit_kerja,
+  };
+
+  await fetch('http://localhost:8000/api/pegawai/unit-tugas', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(dataUnitTugas),
+  });
+};
+
+const onSubmit = async () => {
+  try {
+    await submitPegawaiData();
+    await submitKontakPegawai();
+    await submitTempatTugasPegawai();
+    await submitUnitTugasPegawai();
+    console.log("Data berhasil dikirim ke semua endpoint.");
+  } catch (error) {
+    console.error("Error dalam pengiriman data:", error);
+  }
 };
 </script>

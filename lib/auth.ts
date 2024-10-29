@@ -65,5 +65,5 @@ export function useAuth() {
   }
   
 
-  return { user, login, logout, isLoggedIn }
+  return { token, user, login, logout, isLoggedIn }
 }

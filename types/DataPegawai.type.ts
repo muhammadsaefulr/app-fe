@@ -13,6 +13,11 @@ export interface KontakPegawai {
   npwp: string;
 }
 
+export interface TempatTugas {
+  nip: string;
+  tempat_tugas: string;
+}
+
 export interface Pegawai {
   id: number;
   nip: string;
@@ -26,6 +31,7 @@ export interface Pegawai {
   updated_at: string;
   unit_tugas: UnitTugas;
   kontak_pegawai: KontakPegawai;
+  tempat_tugas_pegawai: TempatTugas;
 }
 
 export interface ApiResponse {

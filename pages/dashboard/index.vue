@@ -273,17 +273,17 @@ const fetchPegawai = async () => {
 
 const filteredPegawai = computed(() => {
   return PegawaiData.value.filter(
-    (employee: any) =>
-      employee.nama.toLowerCase().includes(searchTerm.value.toLowerCase()) &&
+    (pegawai: any) =>
+      pegawai.nama.toLowerCase().includes(searchTerm.value.toLowerCase()) &&
       (filterUnitKerja.value === "all" ||
-        employee.unit_tugas.unit_kerja === filterUnitKerja.value)
+        pegawai.unit_tugas.unit_kerja === filterUnitKerja.value)
   );
 });
 
 const uniqueUnitKerja = computed(() => {
   const uniqueUnits = new Set(
     PegawaiData.value
-      .map((employee: any) => employee.unit_tugas?.unit_kerja)
+      .map((pegawai: any) => pegawai.unit_tugas?.unit_kerja)
       .filter((unit) => unit) 
   );
   return Array.from(uniqueUnits);

@@ -48,6 +48,7 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import type { Pegawai } from "~/types/DataPegawai.type";
+import EditPegawai from "./form/edit-pegawai.vue";
 
 // State Management
 const colorMode = useColorMode();
@@ -82,12 +83,12 @@ const deletePegawai = async (nip: string) => {
 
   loading.value = true;
   try {
-    const response = await fetch(`http://localhost:8000/api/pegawai/delete/${nip}`, {
+    const response = await fetch(`http://localhost:8000/api/pegawai/data/${nip}`, {
       method: "DELETE",
     });
     const data = await response.json();
 
-    if (data.success === "success") {
+    if (data.success == true) {
       PegawaisData.value = PegawaisData.value.filter(Pegawai => Pegawai.nip !== nip);
       alert("Pegawai deleted successfully.");
     } else {
@@ -202,6 +203,7 @@ onMounted(() => {
             <CardDescription
               >Manage your Pegawais and view their details.</CardDescription
             >
+
           </CardHeader>
           <CardContent>
             <Tabs default-value="all">
@@ -233,6 +235,9 @@ onMounted(() => {
                             >
                             <TableHead class="whitespace-nowrap"
                               >Jabatan</TableHead
+                            >
+                            <TableHead class="whitespace-nowrap"
+                              >Tempat Tugas</TableHead
                             >
                             <TableHead class="whitespace-nowrap"
                               >Agama</TableHead
@@ -286,6 +291,9 @@ onMounted(() => {
                             <TableCell class="whitespace-nowrap">{{
                               row.unit_tugas.jabatan || "-"
                             }}</TableCell>
+                             <TableCell class="whitespace-nowrap">{{
+                              row.tempat_tugas_pegawai.tempat_tugas || "-"
+                            }}</TableCell>
                             <TableCell class="whitespace-nowrap">{{
                               row.agama || "-"
                             }}</TableCell>
@@ -306,8 +314,13 @@ onMounted(() => {
                                   ></DropdownMenuTrigger
                                 >
                                 <DropdownMenuContent>
-                                  <DropdownMenuItem>Edit</DropdownMenuItem>
-                                  <DropdownMenuItem
+<Dialog v-model:open="open">
+            <DialogTrigger as-child>
+              <Button variant="outline">Edit</Button>
+            </DialogTrigger>
+
+            <EditPegawai :nip="row.nip" v-if="open"/>
+          </Dialog>                                  <DropdownMenuItem
                                     @click="deletePegawai(row.nip)"
                                     variant="outline"
                                     color="red"
